@@ -23,4 +23,12 @@ public class MongoDbRepository {
     public Optional<Document> getActorByName(String name) {
         return Optional.ofNullable(collection.find(Filters.eq("name", name)).first());
     }
+
+	public String getActorByNameToJSON(String name) {
+		Optional<Document> peutEtreUnDocument = getActorByName(name);
+		if(!peutEtreUnDocument.isPresent())
+			return "";
+		Document doc = peutEtreUnDocument.get();
+		return doc.toJson();
+	}
 }
