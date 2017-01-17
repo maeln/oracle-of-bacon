@@ -12,7 +12,7 @@ public class RedisRepository {
 	}
 
 	public void addSearch(String actorName) {
-		jedis.rpush("searches", actorName);
+		jedis.lpush("searches", actorName);
 	}
 
     public List<String> getLastTenSearches() {
