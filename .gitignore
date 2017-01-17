@@ -1,0 +1,5 @@
+neo4jdb
+*.class
+oracle-of-bacon-frontend/node_modules
+oracle-of-bacon-backend/build
+imdb-data

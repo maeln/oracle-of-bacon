@@ -19,7 +19,8 @@ public class Neo4JRepository {
     public List<?> getConnectionsToKevinBacon(String actorName) {
         Session session = driver.session();
 
-        // TODO implement Oracle of Bacon
+
+
         return null;
     }
 
