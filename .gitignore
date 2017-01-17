@@ -1,4 +1,4 @@
-neo4jdb
+neo4j.db
 *.class
 oracle-of-bacon-frontend/node_modules
 oracle-of-bacon-backend/build
