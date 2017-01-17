@@ -1,0 +1,11 @@
+PUT imdb2- 
+{
+  "mappings": {
+    "actor": { 
+      "_all":       { "enabled": false  }, 
+      "properties": { 
+        "name":     { "type": "text"  }
+      }
+    }
+  }
+}
