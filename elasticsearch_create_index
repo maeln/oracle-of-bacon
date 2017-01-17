@@ -1,10 +1,10 @@
 PUT imdb2- 
 {
   "mappings": {
-    "actor": { 
-      "_all":       { "enabled": false  }, 
+    "actor": {
       "properties": { 
-        "name":     { "type": "text"  }
+	"suggest" : {"type": "completion"},
+        "name":     {"type": "text"}
       }
     }
   }
