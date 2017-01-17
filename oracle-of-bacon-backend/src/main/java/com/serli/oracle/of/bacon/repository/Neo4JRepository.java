@@ -1,12 +1,12 @@
 package com.serli.oracle.of.bacon.repository;
 
 
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.*;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import static org.neo4j.driver.v1.Values.parameters;
 
 
 public class Neo4JRepository {
@@ -17,11 +17,21 @@ public class Neo4JRepository {
     }
 
     public List<?> getConnectionsToKevinBacon(String actorName) {
+	    LinkedList<String> path = new LinkedList<>();
         Session session = driver.session();
-
-
-
-        return null;
+	    StatementResult result = session.run( "MATCH p=shortestPath(\n" +
+					    "\t\t(k:Actor)-[*..6]-(d:Actor)\n" +
+					    "\t) WHERE k.name contains \"Bacon, Kevin\" and d.name contains \"{actor}\" RETURN p LIMIT 1",
+			    parameters( "actor", actorName ) );
+	    while (result.hasNext()) {
+		    Record record = result.next();
+			if(record.containsKey("title"))
+		        path.add(record.get("title").asString());
+		    else if(record.containsKey("name"))
+				path.add(record.get("name").asString());
+	    }
+	    session.close();
+        return path;
     }
 
     private static abstract class GraphItem {
