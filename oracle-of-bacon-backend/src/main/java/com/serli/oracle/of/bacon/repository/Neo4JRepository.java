@@ -1,7 +1,9 @@
 package com.serli.oracle.of.bacon.repository;
 
-
 import org.neo4j.driver.v1.*;
+import org.neo4j.driver.v1.types.Node;
+import org.neo4j.driver.v1.types.Path;
+import org.neo4j.driver.v1.types.Relationship;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,23 +15,38 @@ public class Neo4JRepository {
     private final Driver driver;
 
     public Neo4JRepository() {
-        driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
+        driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "master"));
     }
 
-    public List<?> getConnectionsToKevinBacon(String actorName) {
-	    LinkedList<String> path = new LinkedList<>();
+	public String getConnectionsToKevinBaconToJson(String actorName) {
+		List<GraphItem> path = getConnectionsToKevinBacon(actorName);
+		StringBuffer json = new StringBuffer("[");
+		json.append(path.get(0));
+		for(int i=1; i<path.size(); ++i) {
+			json.append(", ");
+			json.append(path.get(i));
+		}
+		json.append("]");
+		return json.toString();
+	}
+
+    public List<GraphItem> getConnectionsToKevinBacon(String actorName) {
+	    LinkedList<GraphItem> path = new LinkedList<>();
         Session session = driver.session();
-	    StatementResult result = session.run( "MATCH p=shortestPath(\n" +
-					    "\t\t(k:Actor)-[*..6]-(d:Actor)\n" +
-					    "\t) WHERE k.name contains \"Bacon, Kevin\" and d.name contains \"{actor}\" RETURN p LIMIT 1",
-			    parameters( "actor", actorName ) );
-	    while (result.hasNext()) {
-		    Record record = result.next();
-			if(record.containsKey("title"))
-		        path.add(record.get("title").asString());
-		    else if(record.containsKey("name"))
-				path.add(record.get("name").asString());
-	    }
+
+	    StatementResult result = session.run("MATCH p=shortestPath(" +
+			    "(k:Actor {name: \"Bacon, Kevin (I)\"})-[*]-(d:Actor {name: {actor}})) RETURN p",
+			    parameters( "actor", actorName));
+
+	    Record r = result.next();
+	    Path p = r.get("p").asPath();
+		for(Node node : p.nodes())
+			path.add(new GraphNode(node.id(),
+					node.containsKey("title") ? node.get("title").asString() : node.get("name").asString(),
+					node.containsKey("title") ? "Movie" : "Actor"));
+	    for(Relationship rel : p.relationships())
+	        path.add(new GraphEdge(rel.id(), rel.startNodeId(), rel.endNodeId(), rel.type()));
+
 	    session.close();
         return path;
     }
@@ -66,6 +83,11 @@ public class Neo4JRepository {
             this.value = value;
             this.type = type;
         }
+
+	    @Override
+	    public String toString() {
+		    return "{ \"data\": { \"id\": \"" + id + "\", \"type\": \"" + type + "\", \"value\": \"" + value + "\" } }";
+	    }
     }
 
     private static class GraphEdge extends GraphItem {
@@ -79,5 +101,10 @@ public class Neo4JRepository {
             this.target = target;
             this.value = value;
         }
+
+	    @Override
+	    public String toString() {
+		    return "{ \"data\": { \"id\": \"" + id + "\", \"source\": \"" + source + "\", \"target\": \"" + target + "\", \"value\": \"" + value + "\" } }";
+	    }
     }
 }
