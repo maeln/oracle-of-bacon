@@ -46,7 +46,8 @@ public class ElasticSearchRepository {
 
 	    SearchResult result = jestClient.execute(search);
 	    LinkedList<String> actors = new LinkedList<>();
-	    if(result.getTotal() <= 0) {
+	    List<SearchResult.Hit<Actor, Void>> res = result.getHits(Actor.class);
+	    if(res.isEmpty()) {
 	    	// We found no actor with the searchQuery, so we are searching for actor who work in a movie with the title searchQuery.
 		    query = String.format("{\n" +
 				    "  \"_source\": [\"name\"],\n" +
@@ -58,13 +59,14 @@ public class ElasticSearchRepository {
 				    "  }\n" +
 				    "}", searchQuery);
 		    search = new Search.Builder(query).addIndex("imdb16").build();
-		    for(SearchResult.Hit<Actor, Void> res : result.getHits(Actor.class)) {
-			    actors.add(res.source.name);
+		    res = jestClient.execute(search).getHits(Actor.class);
+		    for(SearchResult.Hit<Actor, Void> actor : res) {
+			    actors.add(actor.source.name);
 		    }
 	    }
 	    else {
-		    for(SearchResult.Hit<Actor, Void> res : result.getHits(Actor.class)) {
-			    actors.add(res.source.name);
+		    for(SearchResult.Hit<Actor, Void> actor : res) {
+			    actors.add(actor.source.name);
 	        }
 	    }
 
