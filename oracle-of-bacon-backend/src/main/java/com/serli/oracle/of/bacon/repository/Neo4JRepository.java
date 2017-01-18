@@ -18,6 +18,10 @@ public class Neo4JRepository {
         driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "master"));
     }
 
+
+    /*
+    Do the same thing as getConnectionsToKevinBacon but return the graph in JSON.
+     */
 	public String getConnectionsToKevinBaconToJson(String actorName) {
 		List<GraphItem> path = getConnectionsToKevinBacon(actorName);
 		StringBuffer json = new StringBuffer("[");
@@ -84,6 +88,7 @@ public class Neo4JRepository {
             this.type = type;
         }
 
+        // Allow the graph node to be returned as JSON.
 	    @Override
 	    public String toString() {
 		    return String.format("{ \"data\": { \"id\": \"%d\", \"type\": \"%s\", \"value\": \"%s\" } }", id, type, value);
@@ -102,6 +107,7 @@ public class Neo4JRepository {
             this.value = value;
         }
 
+	    // Allow the graph edge to be returned as JSON.
 	    @Override
 	    public String toString() {
 		    return String.format("{ \"data\": { \"id\": \"%d\", \"source\": \"%d\", \"target\": \"%d\", \"value\": \"%s\" } }", id, source, target, value);
