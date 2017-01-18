@@ -39,8 +39,8 @@ public class ElasticSearchRepository {
     }
 
     public List<String> getActorsSuggests(String searchQuery) {
-	    String query = "{\"_source\": [\"name\"], \"from\" : 0, \"size\" : 4,\"query\" : " +
-			    "{\"match\": {\"name\": \""+searchQuery+"\"}}}";
+	    String query = String.format("{\"_source\": [\"name\"], \"from\" : 0, \"size\" : 4,\"query\" : " +
+			    "{\"match\": {\"name\": \"%s\"}}}", searchQuery);
 	    Search search = new Search.Builder(query).addIndex("imdb").build();
 
 	    try {

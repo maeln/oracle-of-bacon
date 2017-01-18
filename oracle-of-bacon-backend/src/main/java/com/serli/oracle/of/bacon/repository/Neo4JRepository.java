@@ -86,7 +86,7 @@ public class Neo4JRepository {
 
 	    @Override
 	    public String toString() {
-		    return "{ \"data\": { \"id\": \"" + id + "\", \"type\": \"" + type + "\", \"value\": \"" + value + "\" } }";
+		    return String.format("{ \"data\": { \"id\": \"%d\", \"type\": \"%s\", \"value\": \"%s\" } }", id, type, value);
 	    }
     }
 
@@ -104,7 +104,7 @@ public class Neo4JRepository {
 
 	    @Override
 	    public String toString() {
-		    return "{ \"data\": { \"id\": \"" + id + "\", \"source\": \"" + source + "\", \"target\": \"" + target + "\", \"value\": \"" + value + "\" } }";
+		    return String.format("{ \"data\": { \"id\": \"%d\", \"source\": \"%d\", \"target\": \"%d\", \"value\": \"%s\" } }", id, source, target, value);
 	    }
     }
 }

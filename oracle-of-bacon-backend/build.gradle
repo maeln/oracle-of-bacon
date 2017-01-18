@@ -17,5 +17,6 @@ dependencies {
     compile 'io.searchbox:jest:2.0.4'
     compile 'redis.clients:jedis:2.9.0'
     compile 'org.mongodb:mongodb-driver:3.4.1'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '5.1.2'
     testCompile 'junit:junit:4.12'
 }

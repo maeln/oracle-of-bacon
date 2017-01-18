@@ -1,10 +1,10 @@
-PUT imdb2- 
+PUT imdb5
 {
   "mappings": {
     "actor": {
       "properties": { 
-	"suggest" : {"type": "completion"},
-        "name":     {"type": "text"}
+        "name":     {"type": "text", "fielddata": true},
+        "movies": 	{"type": "completion"}
       }
     }
   }

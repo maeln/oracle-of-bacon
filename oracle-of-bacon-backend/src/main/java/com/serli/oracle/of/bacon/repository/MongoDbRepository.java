@@ -28,7 +28,6 @@ public class MongoDbRepository {
 		Optional<Document> peutEtreUnDocument = getActorByName(name);
 		if(!peutEtreUnDocument.isPresent())
 			return "";
-		Document doc = peutEtreUnDocument.get();
-		return doc.toJson();
+		return peutEtreUnDocument.get().toJson();
 	}
 }
